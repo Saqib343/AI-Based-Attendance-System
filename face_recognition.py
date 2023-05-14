@@ -25,8 +25,6 @@ def recognize_faces(frame, model_path, csv_path):
         label, confidence = recognizer.predict(roi_gray)
         if confidence < 60:
             name = students[str(label)] if str(label) in students else "Unknown"
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(frame, f'{name} ({label})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             with open(csv_path, 'r') as f:
                 reader = csv.DictReader(f)
                 rows = []
@@ -38,9 +36,10 @@ def recognize_faces(frame, model_path, csv_path):
                 writer = csv.DictWriter(f, fieldnames=reader.fieldnames)
                 writer.writeheader()
                 writer.writerows(rows)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(frame, f'{name} ({label})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         else:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.putText(frame, f'Unknown', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
     return names, labels, confidences
-
